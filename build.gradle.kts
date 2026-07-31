@@ -1,7 +1,5 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") version "2.4.10"
 }
 
 group = "ru.technicalExcellence.codingDojo"
@@ -9,7 +7,7 @@ version = "1.0"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -17,13 +15,12 @@ repositories {
     mavenCentral()
 }
 
-val junitVersion: String by project
-val mockitoVersion: String by project
-val mockitoKotlinVersion: String by project
+val junitVersion: String = providers.gradleProperty("junitVersion").get()
+val junitLauncherVersion: String = providers.gradleProperty("junitLauncherVersion").get()
+val mockitoVersion: String = providers.gradleProperty("mockitoVersion").get()
+val mockitoKotlinVersion: String = providers.gradleProperty("mockitoKotlinVersion").get()
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
@@ -31,13 +28,8 @@ dependencies {
     testImplementation("org.mockito:mockito-core:$mockitoVersion")
     testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
     testImplementation("org.mockito:mockito-junit-jupiter:$mockitoVersion")
-}
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "17"
-    }
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitLauncherVersion")
 }
 
 tasks.withType<Test> {
